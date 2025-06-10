@@ -21,9 +21,10 @@ using MongoDB.Driver;
             var client = new MongoClient(CadenaConexion.MONGO_DB);
             var bd = client.GetDatabase("Escuela_Zaira_Atala");
             var collection = bd.GetCollection<Equipo>("Equipo");
-            var list = collection.Find(FilterDefinition<Equipo>.Empty).ToList();
+            var item = collection.Find(FilterDefinition<Equipo>.Empty).FirstOrDefault();
 
-           return Ok (list);
+
+           return Ok (item);
         }
     }
     
