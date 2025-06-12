@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 type Usuario = {
-    "id": string,
+    "Id": string,
     "Nombre": string,
     "Password": string,
     "Correo": string
@@ -9,6 +9,29 @@ type Usuario = {
 const Usuarios = () => {
     //Datos
     const [registros, setRegistros] = useState<Usuario[]>([]);
+    const [texto, setTexto] = useState("");
+
+    const listarRegistros = async () => {
+        let url = "/api/usuarios";
+
+        if(texto) {
+            url += "?texto=" + texto;
+        }
+
+        const resp = await fetch(url);
+        if(resp.ok){
+            const datos = await resp.json();
+            setRegistros(datos);
+        }
+    }
+
+    useEffect(()=>{
+        listarRegistros();
+    }, []);
+
+    const buscar = () => {
+        listarRegistros();
+    }
 
     //Vista
     return (
@@ -24,11 +47,14 @@ const Usuarios = () => {
                         <div className="col-12">
                             <div className="mb-3">
                                 <label>Búsqueda de Usuarios</label>
-                                <input type= "text" className="form-control" placeholder="Introduce el nombre o el correo"></input>
+                                <input type= "text" className="form-control" 
+                                placeholder="Introduce el nombre o el correo" 
+                                onChange={(e) => setTexto(e.target.value)}>
+                               </input>
                             </div>
                         </div>
                         <div className="col-12">
-                            <button className="btn btn-primary">Buscar</button>
+                            <button className="btn btn-primary" onClick={buscar}>Buscar</button>
                         </div>
                     </div>
                 </div>
@@ -52,21 +78,28 @@ const Usuarios = () => {
                         {
                             registros.length === 0 &&
                             <tbody>
-                                
+                                <td colSpan = {5}>No hay registros para mostrar</td>
                             </tbody>
                         }
+                        {
+                            registros.length > 0 &&
                         <tbody>
+                           {
+                            registros.map((item, index) =>
                             <tr>
-                                <td>1</td>
-                                <td>Nombre del usuario 1</td>
-                                <td>Correo del usuario 1</td>
-                                <td>Contraseña del usuario 1</td>
+                                <td>{index + 1}</td>
+                                <td>{item.Nombre}</td>
+                                <td>{item.Correo}</td>
+                                <td>{item.Password}</td>
                                 <td className="d-flex gap-2">
-                                    <button className="btn btn-primary">Editar</button>
+                                    <a className="btn btn-primary" href={"/usuarios/" + item.Id}>Editar</a>
                                     <button className="btn btn-danger">Eliminar</button>
                                 </td>
                             </tr>
+                               )
+                            }
                         </tbody>
+                        }
                     </table>
                 </div>
             </div>

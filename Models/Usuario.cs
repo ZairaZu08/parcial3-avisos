@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 public class Usuario 
 {
     [BsonId, BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-    public string? id { get; set; }
+    public string? Id { get; set; }
     [BsonElement("nombre")]
     public string Nombre { get; set; } = string.Empty;
     [BsonElement("password")]
