@@ -8,7 +8,7 @@ public class UsuariosController : Controller
         return View();
     }
 
-    [Route("editar/{id}")]
+    [Route("editar/{id?}")]
     public IActionResult Editar(string? id)
     {
         ViewBag.ID = id;
