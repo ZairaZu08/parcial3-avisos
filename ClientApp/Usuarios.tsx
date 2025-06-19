@@ -34,11 +34,11 @@ const Usuarios = () => {
     }
 
     const eliminar = async (item: Usuario) => {
-        if(confirm("¿Desea eliminar el usuario" + item.Nombre + "?")){
+        if(!confirm("¿Desea eliminar el usuario" + item.Nombre + "?")){
             return;
         }
 
-        const resp = await fetch("/api/usuarios" + item.Id, {   
+        const resp = await fetch("/api/usuarios/" + item.Id, {   
             method: "DELETE"
         });
 

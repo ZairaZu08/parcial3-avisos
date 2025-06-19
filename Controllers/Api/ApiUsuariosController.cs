@@ -128,9 +128,6 @@ public class ApiUsuariosController : ControllerBase
             //Validar que el correo no exista
             var filterCorreo = Builders<Usuario>.Filter.Eq(x => x.Correo, model.Correo);
             var itemExistente = this.collection.Find(filterCorreo).FirstOrDefault();
-            Console.Write(model.Correo);
-            Console.Write(itemExistente.Id);
-            Console.Write(id);
             if(itemExistente != null && itemExistente.Id != id)
             {
                 return BadRequest("El correo " + model.Correo + " ya existe en la base de datos");
