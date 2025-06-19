@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface UsuariosEditarProps {
     id? : string
@@ -9,6 +9,25 @@ const UsuariosEditar = ({id}: UsuariosEditarProps) => {
     const [nombre, setNombre] = useState("");
     const [correo, setCorreo] = useState("");
     const [password, setPassword] = useState("");
+
+    const obtenerUsuarioExistente = async () => {
+        const resp = await fetch("/api/usuarios/" + idUsuario);
+        if(resp.ok){
+            const datos = await resp.json();
+            setNombre(datos.Nombre);
+            setCorreo(datos.Correo);
+            setPassword(datos.Password);
+        }
+        else {
+            alert("Ocurrió un error al obtener el registro");
+        }
+    }
+
+    useEffect(()=>{
+        if(idUsuario){
+            obtenerUsuarioExistente();
+        }
+    }, []);
 
     const guardar = async () => {
         const model = {
@@ -21,6 +40,11 @@ const UsuariosEditar = ({id}: UsuariosEditarProps) => {
         let url = "/api/usuarios";
         let metodo = "POST";
 
+        if(idUsuario){
+            url += "/" + idUsuario;
+            metodo = "PUT";
+        }
+
         const resp = await fetch(url, {
             method: metodo,
             body: JSON.stringify(model),
@@ -31,6 +55,7 @@ const UsuariosEditar = ({id}: UsuariosEditarProps) => {
 
         if(resp.ok) {
             alert("El registro se guardo correctamente");
+            location.href = "/usuarios";
         }
         else {
             const error = await resp.text()
@@ -48,19 +73,22 @@ const UsuariosEditar = ({id}: UsuariosEditarProps) => {
                 <div className="col-12">
                     <div className="mb-3">
                         <label>Nombre</label>
-                        <input type="text" className="form-control" onChange={(e) => setNombre(e.target.value)} ></input>
+                        <input type="text" className="form-control" onChange={(e) => setNombre(e.target.value)} 
+                        value={nombre} ></input>
                     </div>
                 </div>
                 <div className="col-12">
                     <div className="mb-3">
                         <label>Correo Electrónico</label>
-                        <input type="email" className="form-control" onChange={(e) => setCorreo(e.target.value)}></input>
+                        <input type="email" className="form-control" onChange={(e) => setCorreo(e.target.value)} 
+                        value={correo}></input>
                     </div>
                 </div>
                 <div className="col-12">
                     <div className="mb-3">
                         <label>Contraseña</label>
-                        <input type="text" className="form-control" onChange={(e) => setPassword(e.target.value)}></input>
+                        <input type="text" className="form-control" onChange={(e) => setPassword(e.target.value)} 
+                        value={password}></input>
                     </div>
                 </div>
                 <div className="col-12 d-flex gap-2 justify-content-end">
